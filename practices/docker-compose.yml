@@ -1,0 +1,57 @@
+version: "3.9"  # Docker Compose version
+
+services:
+  django:
+    build:
+      context: .   # Path to Django project
+      dockerfile: Dockerfile  # Use the Dockerfile inside backend/
+    image: practicing-django-app
+    container_name: django_app  # Name of the container
+    restart: always  # Restart the container if it crashes
+    depends_on:
+      - db   # Wait for MySQL to start
+      # - redis  # Wait for Redis to start
+   
+    ports:
+      - "8000:8000"  # Expose Django on port 8000
+    volumes:
+      - .:/practicefolder
+    environment:
+      - DEBUG=True
+      - DB_HOST=db
+      - DB_NAME=practicing
+      - DB_USER=logesh
+      - DB_PASSWORD=Logesh@mysql
+
+    command: >
+      sh -c "python3 manage.py collectstatic --noinput &&
+             python3 manage.py makemigrations &&
+             python3 manage.py migrate &&
+             python3 manage.py runserver 0.0.0.0:8000"
+
+    # gunicorn --bind 0.0.0.0:8000 practices.wsgi:application
+   
+  db:
+    image: mysql:8.0  # MySQL database image
+    container_name: mysql_db  # Name of the MySQL container
+    restart: always  # Restart automatically if needed
+    environment:
+      MYSQL_ROOT_PASSWORD: Root@123
+      MYSQL_DATABASE: practicing
+      MYSQL_USER: logesh
+      MYSQL_PASSWORD: Logesh@mysql
+    ports:
+      - "3307:3306"  # Expose MySQL on port 3306
+    volumes:
+      - mysql_data:/var/lib/mysql  # Persistent storage for MySQL
+
+  # redis:
+  #   image: redis:latest  # Use latest Redis image
+  #   container_name: redis_cache  # Name of the Redis container
+  #   restart: always  # Restart automatically if needed
+  #   ports:
+  #     - "6379:6379"  # Expose Redis on port 6379
+
+  
+volumes:
+  mysql_data:  # Named volume for MySQL data
