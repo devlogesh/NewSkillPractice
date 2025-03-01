@@ -4,10 +4,11 @@
 echo "Running entrypoint.sh..."
 
 
-python manage.py collectstatic --noinput
+python3 manage.py collectstatic --noinput
 
-python manage.py makemigrations --noinput
+python3 manage.py makemigrations 
+python3 manage.py migrate 
 
-python manage.py migrate --noinput
+python3 manage.py runserver 0.0.0.0:8000
 
-exec  gunicorn --bind 0.0.0.0:8000 practices.wsgi:application
+# exec  gunicorn --bind 0.0.0.0:8000 practices.wsgi:application

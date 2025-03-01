@@ -10,10 +10,10 @@ RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-# COPY entrypoint.sh /practicefolder/entrypoint.sh
+COPY entrypoint.sh /practicefolder/entrypoint.sh
 
 COPY . .
 
 EXPOSE 8000
 
-# ENTRYPOINT ["/practicefolder/entrypoint.sh"]
+ENTRYPOINT ["/practicefolder/entrypoint.sh"]
